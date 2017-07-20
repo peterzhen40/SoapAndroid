@@ -12,7 +12,7 @@ buildscript {
 
 allprojects {
     repositories {
-        maven { url "http://14.23.69.2:1001/repository/maven-public/" }
+        maven { url "http://192.168.11.23:6001/repository/maven-public/" }
         maven { url "http://dl.bintray.com/customhuc/maven" }
         jcenter()
 
