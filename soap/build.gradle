@@ -1,5 +1,6 @@
 apply plugin: 'com.android.library'
-apply plugin: 'com.comsince.publisher'
+apply plugin: 'maven'
+
 
 android {
     compileSdkVersion 25
@@ -21,9 +22,33 @@ android {
 dependencies {
     provided files('libs/ksoap2-android-assembly-3.3.0-jar-with-dependencies.jar')
     //配置 RxJava
-    provided 'io.reactivex.rxjava2:rxjava:2.0.1'
-    provided 'com.google.code.gson:gson:2.2.4'
+    provided 'io.reactivex.rxjava2:rxjava:2.1.0'
+    provided 'io.reactivex.rxjava2:rxandroid:2.0.1'
+    provided 'com.google.code.gson:gson:2.8.1'
 }
+uploadArchives {
+    configuration = configurations.archives
+    repositories {
+        mavenDeployer {
+
+            repository(url: MAVEN_REPO_RELEASE_URL) {
+                authentication(userName: NEXUS_USERNAME, password: NEXUS_PASSWORD)
+            }
+            pom.project {
+                version '1.1.0'
+                artifactId 'soapandroid'
+                groupId GROUP_ID
+                packaging TYPE
+                description DESCRIPTION
+            }
+        }
+    }
+}
+
+artifacts {
+    archives file('soap.aar')
+}
+
 tasks.withType(JavaCompile) {
     options.encoding = "UTF-8"
 }
