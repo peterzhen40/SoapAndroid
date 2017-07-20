@@ -1,5 +1,6 @@
 package com.zyy.soap.factory;
 
+import io.reactivex.Flowable;
 import io.reactivex.Observable;
 
 /**
@@ -11,4 +12,6 @@ public interface ICallFactory {
 
 
     Observable convert(Observable observable);
+
+    Flowable convert(Flowable flowable);
 }

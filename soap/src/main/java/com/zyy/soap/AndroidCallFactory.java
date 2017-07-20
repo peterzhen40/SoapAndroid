@@ -3,6 +3,7 @@ package com.zyy.soap;
 
 import com.zyy.soap.factory.ICallFactory;
 
+import io.reactivex.Flowable;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
@@ -21,6 +22,12 @@ public class AndroidCallFactory implements ICallFactory {
     @Override
     public Observable convert(Observable observable) {
         return observable.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    @Override
+    public Flowable convert(Flowable flowable) {
+        return flowable.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
 }

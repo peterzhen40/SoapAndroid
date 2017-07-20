@@ -18,9 +18,14 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.lang.reflect.Type;
 
+import io.reactivex.BackpressureStrategy;
+import io.reactivex.Flowable;
+import io.reactivex.FlowableEmitter;
+import io.reactivex.FlowableOnSubscribe;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.annotations.NonNull;
 
 
 /**
@@ -117,49 +122,114 @@ public final class Soap {
                         if (callFactory == null) {
                             throw new IllegalArgumentException("call facotry must be instantce");
                         }
-                        return callFactory.convert(Observable.create(new ObservableOnSubscribe<Object>() {
-                            @Override
-                            public void subscribe(ObservableEmitter<Object> emitter) throws Exception {
-                                Type responseType = Utils.getCallResponseType(method.getGenericReturnType());
-                                try {
-                                    ISoapRequest mSoapRequest = AnnonationsUtil.
-                                            transformInvokeToRequest(service, method, args, baseUrl);
-                                    String result = RxService.call(
-                                            mSoapRequest.getNameSpace(),
-                                            mSoapRequest.getEndPoint(),
-                                            mSoapRequest.getMethodName(),
-                                            mSoapRequest.getParams());
-                                    if (!ResultUtil.isError(result)) {
-                                        Gson gson = new Gson();
-                                        if (responseType != String.class) {
-                                            TypeAdapter<?> adapter = gson.getAdapter(TypeToken.get(responseType));
-                                            if (!emitter.isDisposed()) {
-                                                emitter.onNext(adapter.fromJson(result));
-                                            }
-                                        } else {
-                                            if (!emitter.isDisposed()) {
-                                                emitter.onNext(result);
-                                            }
-                                        }
-                                        if (!emitter.isDisposed()) {
-                                            emitter.onComplete();
-                                        }
-
-                                    } else {
-                                        if (!emitter.isDisposed()) {
-                                            emitter.onError(new Throwable(ResultUtil.getError(result)));
-                                        }
-                                    }
-                                } catch (Exception e) {
-                                    if (!emitter.isDisposed()) {
-                                        emitter.onError(e);
-                                    }
-                                }
-                            }
-                        }));
+                        Class<?> responseClass = method.getReturnType();
+                        if (responseClass == Observable.class) {
+                            return callFactory.convert(createObservable(service, method, baseUrl, args));
+                        } else if (responseClass == Flowable.class) {
+                            return callFactory.convert(createFloawable(service, method, baseUrl, args));
+                        } else if (responseClass == String.class) {
+                            ISoapRequest mSoapRequest = AnnonationsUtil.
+                                    transformInvokeToRequest(service, method, args, baseUrl);
+                            return RxService.call(
+                                    mSoapRequest.getNameSpace(),
+                                    mSoapRequest.getEndPoint(),
+                                    mSoapRequest.getMethodName(),
+                                    mSoapRequest.getParams());
+                        } else {
+                            throw new IllegalArgumentException("unknown return type,you must use Observable,Flowable,String");
+                        }
                     }
                 });
     }
 
+    private Observable createObservable(final Class<?> service, final Method method,
+                                        final String baseUrl, final Object... args) {
+        return Observable.create(new ObservableOnSubscribe<Object>() {
+            @Override
+            public void subscribe(ObservableEmitter<Object> emitter) throws Exception {
+                Type responseType = Utils.getCallResponseType(method.getGenericReturnType());
+                try {
+                    ISoapRequest mSoapRequest = AnnonationsUtil.
+                            transformInvokeToRequest(service, method, args, baseUrl);
+                    String result = RxService.call(
+                            mSoapRequest.getNameSpace(),
+                            mSoapRequest.getEndPoint(),
+                            mSoapRequest.getMethodName(),
+                            mSoapRequest.getParams());
+                    if (!ResultUtil.isError(result)) {
+                        Gson gson = new Gson();
+                        if (responseType != String.class) {
+                            TypeAdapter<?> adapter = gson.getAdapter(TypeToken.get(responseType));
+                            if (!emitter.isDisposed()) {
+                                emitter.onNext(adapter.fromJson(result));
+                            }
+                        } else {
+                            if (!emitter.isDisposed()) {
+                                emitter.onNext(result);
+                            }
+                        }
+                        if (!emitter.isDisposed()) {
+                            emitter.onComplete();
+                        }
 
+                    } else {
+                        if (!emitter.isDisposed()) {
+                            emitter.onError(new Throwable(ResultUtil.getError(result)));
+                        }
+                    }
+                } catch (Exception e) {
+                    if (!emitter.isDisposed()) {
+                        emitter.onError(e);
+                    }
+                }
+            }
+        });
+    }
+
+    Flowable createFloawable(final Class<?> service, final Method method,
+                             final String baseUrl, final Object... args) {
+        return Flowable.create(new FlowableOnSubscribe() {
+            @Override
+            public void subscribe(@NonNull FlowableEmitter emitter) throws Exception {
+                Type responseType = Utils.getCallResponseType(method.getGenericReturnType());
+                try {
+                    ISoapRequest mSoapRequest = AnnonationsUtil.
+                            transformInvokeToRequest(service, method, args, baseUrl);
+                    String result = RxService.call(
+                            mSoapRequest.getNameSpace(),
+                            mSoapRequest.getEndPoint(),
+                            mSoapRequest.getMethodName(),
+                            mSoapRequest.getParams());
+                    if (!ResultUtil.isError(result)) {
+                        Gson gson = new Gson();
+                        if (responseType != String.class) {
+                            TypeAdapter<?> adapter = gson.getAdapter(TypeToken.get(responseType));
+                            if (!emitter.isCancelled()) {
+                                emitter.onNext(adapter.fromJson(result));
+                            }
+                        } else {
+                            if (!emitter.isCancelled()) {
+                                emitter.onNext(result);
+                            }
+                        }
+                        if (!emitter.isCancelled()) {
+                            emitter.onComplete();
+                        }
+
+                    } else {
+                        if (!emitter.isCancelled()) {
+                            emitter.onError(new Throwable(ResultUtil.getError(result)));
+                        }
+                    }
+                } catch (Exception e) {
+                    if (!emitter.isCancelled()) {
+                        emitter.onError(e);
+                    }
+                }
+            }
+        }, BackpressureStrategy.BUFFER);
+    }
 }
+
+
+

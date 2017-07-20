@@ -1,5 +1,6 @@
 package com.zyy.soap.factory;
 
+import io.reactivex.Flowable;
 import io.reactivex.Observable;
 
 /**
@@ -15,5 +16,10 @@ public class DefaultCallFactory implements ICallFactory {
     @Override
     public Observable convert(Observable observable) {
         return observable;
+    }
+
+    @Override
+    public Flowable convert(Flowable flowable) {
+        return flowable;
     }
 }
