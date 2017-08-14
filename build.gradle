@@ -12,6 +12,7 @@ buildscript {
 
 allprojects {
     repositories {
+        maven { url "https://oss.sonatype.org/content/repositories/ksoap2-android-releases/"}
         maven { url "http://192.168.11.23:6001/repository/maven-public/" }
         maven { url "http://dl.bintray.com/customhuc/maven" }
         jcenter()

@@ -26,6 +26,7 @@ import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.annotations.NonNull;
+import okhttp3.OkHttpClient;
 
 
 /**
@@ -51,24 +52,15 @@ public final class Soap {
     public static String NAMESPACE = "";
     public static String ENDPOINT = "";
     private ICallFactory callFactory;
+    private OkHttpClient okHttpClient;
 
-    Soap() {
 
-    }
-
-    Soap(String baseUrl) {
-        this.baseUrl = baseUrl;
-    }
-
-    Soap(String baseUrl, ICallFactory callFactory) {
-        this.baseUrl = baseUrl;
-        this.callFactory = callFactory;
-    }
-
-    Soap(String baseUrl, ICallFactory callFactory, boolean isNew) {
+    Soap(String baseUrl, ICallFactory callFactory, boolean isNew, OkHttpClient okHttpClient) {
         this.baseUrl = baseUrl;
         this.callFactory = callFactory;
         RxService.isNew = isNew;
+        this.okHttpClient = okHttpClient;
+
     }
 
     public static void setDEBUG(boolean DEBUG) {
@@ -81,6 +73,7 @@ public final class Soap {
         private String baseUrl;
         private ICallFactory callFactory;
         private boolean isNew = false;
+        private OkHttpClient okHttpClient;
 
         public Builder baseUrl(String baseUrl) {
             this.baseUrl = baseUrl;
@@ -92,15 +85,21 @@ public final class Soap {
             return this;
         }
 
+
         public Builder callFactory(ICallFactory callFactory) {
             this.callFactory = callFactory;
             return this;
         }
 
+        public Builder client(OkHttpClient okHttpClient) {
+            this.okHttpClient = okHttpClient;
+            return this;
+        }
+
         public Soap build() {
             if (null == callFactory) {
-                return new Soap(baseUrl, DefaultCallFactory.create(), isNew);
-            } else return new Soap(baseUrl, callFactory, isNew);
+                return new Soap(baseUrl, DefaultCallFactory.create(), isNew, okHttpClient);
+            } else return new Soap(baseUrl, callFactory, isNew, okHttpClient);
         }
     }
 
@@ -134,7 +133,7 @@ public final class Soap {
                                     mSoapRequest.getNameSpace(),
                                     mSoapRequest.getEndPoint(),
                                     mSoapRequest.getMethodName(),
-                                    mSoapRequest.getParams());
+                                    mSoapRequest.getParams(), okHttpClient);
                         } else {
                             throw new IllegalArgumentException("unknown return type,you must use Observable,Flowable,String");
                         }
@@ -155,7 +154,7 @@ public final class Soap {
                             mSoapRequest.getNameSpace(),
                             mSoapRequest.getEndPoint(),
                             mSoapRequest.getMethodName(),
-                            mSoapRequest.getParams());
+                            mSoapRequest.getParams(), okHttpClient);
                     if (!ResultUtil.isError(result)) {
                         Gson gson = new Gson();
                         if (responseType != String.class) {
@@ -199,7 +198,7 @@ public final class Soap {
                             mSoapRequest.getNameSpace(),
                             mSoapRequest.getEndPoint(),
                             mSoapRequest.getMethodName(),
-                            mSoapRequest.getParams());
+                            mSoapRequest.getParams(), okHttpClient);
                     if (!ResultUtil.isError(result)) {
                         Gson gson = new Gson();
                         if (responseType != String.class) {
