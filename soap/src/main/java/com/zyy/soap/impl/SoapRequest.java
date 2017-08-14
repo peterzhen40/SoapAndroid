@@ -1,10 +1,7 @@
 package com.zyy.soap.impl;
 
 import com.zyy.soap.interfaces.ISoapRequest;
-import com.zyy.soap.service.SoapService;
-import com.zyy.soap.utils.Utils;
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 
 /**
@@ -27,7 +24,7 @@ public class SoapRequest implements ISoapRequest {
         this.endPoint = endPoint;
         this.methodName = methodName;
         this.params = params;
-        this.endPoint = Utils.validateUrl(SoapService.getInstance().getBaseUrl(), endPoint);
+        this.endPoint = endPoint;
     }
 
     public String getNameSpace() {

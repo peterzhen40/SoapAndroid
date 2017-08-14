@@ -53,19 +53,21 @@ public final class Soap {
     public static String ENDPOINT = "";
     private ICallFactory callFactory;
     private OkHttpClient okHttpClient;
+    private SYSTEM system;
+    public enum SYSTEM {MINBAO, JDYZB}
 
 
-    Soap(String baseUrl, ICallFactory callFactory, boolean isNew, OkHttpClient okHttpClient) {
+    Soap(String baseUrl, ICallFactory callFactory, boolean isNew,
+         OkHttpClient okHttpClient, SYSTEM system) {
         this.baseUrl = baseUrl;
         this.callFactory = callFactory;
         RxService.isNew = isNew;
         this.okHttpClient = okHttpClient;
-
+        this.system = system;
     }
 
     public static void setDEBUG(boolean DEBUG) {
         RxLog.setDEBUG(DEBUG);
-        SoapService.DEBUG = DEBUG;
         Soap.DEBUG = DEBUG;
     }
 
@@ -74,6 +76,7 @@ public final class Soap {
         private ICallFactory callFactory;
         private boolean isNew = false;
         private OkHttpClient okHttpClient;
+        private SYSTEM builderSystem = SYSTEM.MINBAO;
 
         public Builder baseUrl(String baseUrl) {
             this.baseUrl = baseUrl;
@@ -82,6 +85,11 @@ public final class Soap {
 
         public Builder isNewSoap(boolean isNew) {
             this.isNew = isNew;
+            return this;
+        }
+
+        public Builder system(SYSTEM sys) {
+            this.builderSystem = sys;
             return this;
         }
 
@@ -98,8 +106,10 @@ public final class Soap {
 
         public Soap build() {
             if (null == callFactory) {
-                return new Soap(baseUrl, DefaultCallFactory.create(), isNew, okHttpClient);
-            } else return new Soap(baseUrl, callFactory, isNew, okHttpClient);
+                return new Soap(baseUrl, DefaultCallFactory.create(),
+                        isNew, okHttpClient, builderSystem);
+            } else return new Soap(baseUrl, callFactory, isNew,
+                    okHttpClient, builderSystem);
         }
     }
 
@@ -173,7 +183,7 @@ public final class Soap {
 
                     } else {
                         if (!emitter.isDisposed()) {
-                            emitter.onError(new Throwable(ResultUtil.getError(result)));
+                            emitter.onError(new Throwable(ResultUtil.getError(result, system)));
                         }
                     }
                 } catch (Exception e) {
@@ -217,7 +227,7 @@ public final class Soap {
 
                     } else {
                         if (!emitter.isCancelled()) {
-                            emitter.onError(new Throwable(ResultUtil.getError(result)));
+                            emitter.onError(new Throwable(ResultUtil.getError(result, system)));
                         }
                     }
                 } catch (Exception e) {

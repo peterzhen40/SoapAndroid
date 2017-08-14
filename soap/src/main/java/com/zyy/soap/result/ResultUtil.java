@@ -1,5 +1,8 @@
 package com.zyy.soap.result;
 
+import com.zyy.soap.Soap;
+import com.zyy.soap.improved.ResultStateForJDYzb;
+
 import org.ksoap2.SoapFault;
 import org.ksoap2.SoapFault12;
 import org.xmlpull.v1.XmlPullParserException;
@@ -17,7 +20,6 @@ import java.net.SocketTimeoutException;
 public class ResultUtil {
 
 
-
     /**
      * 判断是否为错误信息
      *
@@ -25,8 +27,9 @@ public class ResultUtil {
      * @return
      */
     public static boolean isError(String data) {
+        //数据为空时，也为错误数据
         if (null == data || data.length() == 0)
-            return false;
+            return true;
         if (data.startsWith("err-"))
             return true;
         else
@@ -39,7 +42,10 @@ public class ResultUtil {
      * @param data
      * @return
      */
-    public static String getError(String data) {
+    public static String getError(String data, Soap.SYSTEM system) {
+        if (null == data || data.length() == 0) {
+            return "err-4444:返回数据为空";
+        }
         String err = "";
         if (data.startsWith("err-0000")) {
             return "服务器错误";
@@ -48,10 +54,20 @@ public class ResultUtil {
                 return data.split(":")[1];
             } catch (Exception e) {
                 // 兼容以前的版本
-                if (ResultState.mErrorMap.containsKey(data)) {
-                    return ResultState.getErrorState(data);
+                if (!Soap.SYSTEM.JDYZB.equals(system)) {
+                    //民爆类项目
+                    if (ResultState.mErrorMap.containsKey(data)) {
+                        return ResultState.getErrorState(data);
+                    } else {
+                        return "解析错误,请联系管理员";
+                    }
                 } else {
-                    return "解析错误,请联系管理员";
+                    //剧毒类项目
+                    if (ResultStateForJDYzb.errMap.containsKey(data)) {
+                        return ResultStateForJDYzb.errMap.get(data);
+                    } else {
+                        return "解析错误,请联系管理员";
+                    }
                 }
             }
         }

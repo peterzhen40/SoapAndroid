@@ -3,15 +3,12 @@ package com.zyy.soap.utils;
 
 import com.zyy.soap.annonations.WebParam;
 import com.zyy.soap.annonations.WebService;
-import com.zyy.soap.impl.SoapCall;
 import com.zyy.soap.impl.SoapRequest;
-import com.zyy.soap.interfaces.ISoapCall;
 import com.zyy.soap.interfaces.ISoapRequest;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
-import java.lang.reflect.Type;
 import java.util.LinkedHashMap;
 
 
@@ -55,14 +52,6 @@ public class AnnonationsUtil {
         return soapRequest;
     }
 
-    public static SoapCall<?> transformInvokeToCall(
-            Class<?> target, Method method) {
-        Type type = method.getGenericReturnType();
-        if (type instanceof ISoapCall<?>) {
-        }
-        return new SoapCall<>();
-    }
-
 
     private static WebService createWebService(Class<?> T) {
         WebService service = T.getAnnotation(WebService.class);
@@ -74,10 +63,6 @@ public class AnnonationsUtil {
         return param;
     }
 
-    private static <T> T newMapperProxy(Class<T> mapperInterface) {
-        ClassLoader classLoader = mapperInterface.getClassLoader();
-        Class<?>[] interfaces = new Class[]{mapperInterface};
-        return (T) Proxy.newProxyInstance(classLoader, interfaces, null);
-    }
+
 
 }

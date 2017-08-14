@@ -29,9 +29,9 @@ public class RxApiUtil {
                 try {
                     String namespace = Soap.NAMESPACE;
                     String endpoint = Soap.ENDPOINT;
-                    String data = RxService.call(namespace, endpoint, methodName, params);
+                    String data = RxService.call(namespace, endpoint, methodName, params, null);
                     if (ResultUtil.isError(data)) {
-                        throw new Exception(ResultUtil.getError(data));
+                        throw new Exception(ResultUtil.getError(data, Soap.SYSTEM.MINBAO));
                     }
                     Type returnType = typeToken.getType();
                     Gson gson = new Gson();
@@ -55,11 +55,11 @@ public class RxApiUtil {
             @Override
             public void subscribe(ObservableEmitter e) {
                 try {
-                    String namespace =Soap.NAMESPACE;
+                    String namespace = Soap.NAMESPACE;
                     String endpoint = Soap.ENDPOINT;
-                    String data = RxService.call(namespace, endpoint, methodName, params);
+                    String data = RxService.call(namespace, endpoint, methodName, params, null);
                     if (ResultUtil.isError(data)) {
-                        throw new Exception(ResultUtil.getError(data));
+                        throw new Exception(ResultUtil.getError(data, Soap.SYSTEM.MINBAO));
                     }
                     Gson gson = new Gson();
                     if (!e.isDisposed()) {
@@ -89,9 +89,9 @@ public class RxApiUtil {
                 try {
                     String namespace = Soap.NAMESPACE;
                     String endpoint = Soap.ENDPOINT;
-                    String data = RxService.call(namespace, endpoint, methodName, params);
+                    String data = RxService.call(namespace, endpoint, methodName, params, null);
                     if (ResultUtil.isError(data)) {
-                        throw new Exception(ResultUtil.getError(data));
+                        throw new Exception(ResultUtil.getError(data, Soap.SYSTEM.MINBAO));
                     }
                     if (ResultUtil.isOk(data)) {
                         if (!e.isDisposed()) {
