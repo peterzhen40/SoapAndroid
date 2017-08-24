@@ -66,7 +66,7 @@ public class ResultUtil {
                     if (ResultStateForJDYzb.errMap.containsKey(data)) {
                         return ResultStateForJDYzb.errMap.get(data);
                     } else {
-                        return "解析错误,请联系管理员";
+                        return data;
                     }
                 }
             }
