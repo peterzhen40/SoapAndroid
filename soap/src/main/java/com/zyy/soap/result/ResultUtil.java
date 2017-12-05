@@ -48,7 +48,7 @@ public class ResultUtil {
         }
         String err = "";
         if (data.startsWith("err-0000")) {
-            return "服务器错误";
+            return data; //服务器错误返回所有的信息
         } else {
             try {
                 return data.split(":")[1];
