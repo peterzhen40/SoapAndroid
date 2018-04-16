@@ -36,7 +36,7 @@ public class RxService {
      * @return
      */
     public static String call(String namespace, String endPoint, String methodName,
-                              Map<String, Object> params, OkHttpClient client) {
+                              Map<String, Object> params, OkHttpClient client) throws Exception {
         try {
             SoapPrimitive resultObject = null;
             // 指定WebService的命名空间和调用的方法名
@@ -80,7 +80,7 @@ public class RxService {
         } catch (Exception e) {
             String returnStr = ResultUtil.convertExceptionToString(e);
             RxLog.log(namespace, endPoint, methodName, params, returnStr, e);
-            return returnStr;
+            throw e;
         }
     }
 

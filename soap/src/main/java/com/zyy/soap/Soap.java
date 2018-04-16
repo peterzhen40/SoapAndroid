@@ -54,6 +54,7 @@ public final class Soap {
     private ICallFactory callFactory;
     private OkHttpClient okHttpClient;
     private SYSTEM system;
+
     public enum SYSTEM {MINBAO, JDYZB}
 
 
@@ -183,7 +184,7 @@ public final class Soap {
 
                     } else {
                         if (!emitter.isDisposed()) {
-                            emitter.onError(new Throwable(ResultUtil.getError(result, system)));
+                            emitter.onError(new Throwable(result));
                         }
                     }
                 } catch (Exception e) {
@@ -227,7 +228,7 @@ public final class Soap {
 
                     } else {
                         if (!emitter.isCancelled()) {
-                            emitter.onError(new Throwable(ResultUtil.getError(result, system)));
+                            emitter.onError(new Throwable(result));
                         }
                     }
                 } catch (Exception e) {

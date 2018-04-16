@@ -1,8 +1,5 @@
 package com.zyy.soap.result;
 
-import com.zyy.soap.Soap;
-import com.zyy.soap.improved.ResultStateForJDYzb;
-
 import org.ksoap2.SoapFault;
 import org.ksoap2.SoapFault12;
 import org.xmlpull.v1.XmlPullParserException;
@@ -35,44 +32,6 @@ public class ResultUtil {
         else
             return false;
     }
-
-    /**
-     * 解析返回错误信息
-     *
-     * @param data
-     * @return
-     */
-    public static String getError(String data, Soap.SYSTEM system) {
-        if (null == data || data.length() == 0) {
-            return "err-4444:返回数据为空";
-        }
-        String err = "";
-        if (data.startsWith("err-0000")) {
-            return data; //服务器错误返回所有的信息
-        } else {
-            try {
-                return data.split(":")[1];
-            } catch (Exception e) {
-                // 兼容以前的版本
-                if (!Soap.SYSTEM.JDYZB.equals(system)) {
-                    //民爆类项目
-                    if (ResultState.mErrorMap.containsKey(data)) {
-                        return ResultState.getErrorState(data);
-                    } else {
-                        return "解析错误,请联系管理员";
-                    }
-                } else {
-                    //剧毒类项目
-                    if (ResultStateForJDYzb.errMap.containsKey(data)) {
-                        return ResultStateForJDYzb.errMap.get(data);
-                    } else {
-                        return data;
-                    }
-                }
-            }
-        }
-    }
-
     /**
      * 是否成功
      *
