@@ -25,28 +25,29 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Api.createLogin()
-                        .login("csyyx1", "88888", "1").subscribeWith(new Subscriber<UserInfo>() {
-                    @Override
-                    public void onSubscribe(Subscription s) {
-                        Log.d(TAG, "onSubscribe: ");
-                        s.request(Long.MAX_VALUE);
-                    }
+                        .login("csyyx1", "88888", "1")
+                        .subscribeWith(new Subscriber<UserInfo>() {
+                            @Override
+                            public void onSubscribe(Subscription s) {
+                                Log.d(TAG, "onSubscribe: ");
+                                s.request(Long.MAX_VALUE);
+                            }
 
-                    @Override
-                    public void onNext(UserInfo userInfo) {
-                        Log.d(TAG, "onNext: " + userInfo.toString());
-                    }
+                            @Override
+                            public void onNext(UserInfo userInfo) {
+                                Log.d(TAG, "onNext: " + userInfo.toString());
+                            }
 
-                    @Override
-                    public void onError(Throwable t) {
-                        Log.d(TAG, "onError: ", t);
-                    }
+                            @Override
+                            public void onError(Throwable t) {
+                                Log.d(TAG, "onError: ", t);
+                            }
 
-                    @Override
-                    public void onComplete() {
-                        Log.d(TAG, "onComplete: ");
-                    }
-                });
+                            @Override
+                            public void onComplete() {
+                                Log.d(TAG, "onComplete: ");
+                            }
+                        });
 
             }
         });

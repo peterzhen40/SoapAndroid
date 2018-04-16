@@ -54,6 +54,7 @@ public final class Soap {
     private ICallFactory callFactory;
     private OkHttpClient okHttpClient;
     private SYSTEM system;
+
     public enum SYSTEM {MINBAO, JDYZB}
 
 
@@ -165,26 +166,9 @@ public final class Soap {
                             mSoapRequest.getEndPoint(),
                             mSoapRequest.getMethodName(),
                             mSoapRequest.getParams(), okHttpClient);
-                    if (!ResultUtil.isError(result)) {
-                        Gson gson = new Gson();
-                        if (responseType != String.class) {
-                            TypeAdapter<?> adapter = gson.getAdapter(TypeToken.get(responseType));
-                            if (!emitter.isDisposed()) {
-                                emitter.onNext(adapter.fromJson(result));
-                            }
-                        } else {
-                            if (!emitter.isDisposed()) {
-                                emitter.onNext(result);
-                            }
-                        }
-                        if (!emitter.isDisposed()) {
-                            emitter.onComplete();
-                        }
-
-                    } else {
-                        if (!emitter.isDisposed()) {
-                            emitter.onError(new Throwable(ResultUtil.getError(result, system)));
-                        }
+                    if (!emitter.isDisposed()) {
+                        emitter.onNext(result);
+                        emitter.onComplete();
                     }
                 } catch (Exception e) {
                     if (!emitter.isDisposed()) {
@@ -209,26 +193,9 @@ public final class Soap {
                             mSoapRequest.getEndPoint(),
                             mSoapRequest.getMethodName(),
                             mSoapRequest.getParams(), okHttpClient);
-                    if (!ResultUtil.isError(result)) {
-                        Gson gson = new Gson();
-                        if (responseType != String.class) {
-                            TypeAdapter<?> adapter = gson.getAdapter(TypeToken.get(responseType));
-                            if (!emitter.isCancelled()) {
-                                emitter.onNext(adapter.fromJson(result));
-                            }
-                        } else {
-                            if (!emitter.isCancelled()) {
-                                emitter.onNext(result);
-                            }
-                        }
-                        if (!emitter.isCancelled()) {
-                            emitter.onComplete();
-                        }
-
-                    } else {
-                        if (!emitter.isCancelled()) {
-                            emitter.onError(new Throwable(ResultUtil.getError(result, system)));
-                        }
+                    if (!emitter.isCancelled()) {
+                        emitter.onNext(result);
+                        emitter.onComplete();
                     }
                 } catch (Exception e) {
                     if (!emitter.isCancelled()) {
