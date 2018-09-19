@@ -1,7 +1,5 @@
 package com.zyy.soap.improved;
 
-import com.zyy.soap.result.ResultUtil;
-
 import org.kobjects.base64.Base64;
 import org.ksoap2.SoapEnvelope;
 import org.ksoap2.serialization.SoapObject;
@@ -73,12 +71,12 @@ public class RxService {
             }
             String resultStr = (null == resultObject ? "" : resultObject.toString());
             if (null == resultStr || resultStr.length() == 0) {
-                resultStr = ResultUtil.convertNoData();
+                resultStr = "返回结果为空";
             }
             RxLog.log(namespace, endPoint, methodName, params, resultStr);
             return resultStr;
         } catch (Exception e) {
-            String returnStr = ResultUtil.convertExceptionToString(e);
+            String returnStr = e.getMessage();
             RxLog.log(namespace, endPoint, methodName, params, returnStr, e);
             throw e;
         }

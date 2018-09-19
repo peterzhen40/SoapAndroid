@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/SoapAndroid.iml" filepath="$PROJECT_DIR$/.idea/SoapAndroid.iml" />
+      <module fileurl="file://$PROJECT_DIR$/SoapAndroid.iml" filepath="$PROJECT_DIR$/SoapAndroid.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/soap/soap.iml" filepath="$PROJECT_DIR$/soap/soap.iml" />
     </modules>
