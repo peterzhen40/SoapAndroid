@@ -23,8 +23,8 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Api.createLogin()
-                        .login("csyyx1", "88888", "1").subscribeWith(new Subscriber<UserInfo>() {
+                Api.commonService()
+                        .login("slj", "88888", "1").subscribeWith(new Subscriber<UserInfo>() {
                     @Override
                     public void onSubscribe(Subscription s) {
                         Log.d(TAG, "onSubscribe: ");

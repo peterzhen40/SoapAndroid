@@ -25,12 +25,19 @@ public class ResultUtil {
      */
     public static boolean isError(String data) {
         //数据为空时，也为错误数据
-        if (null == data || data.length() == 0)
+        if (null == data || data.length() == 0) {
             return true;
-        if (data.startsWith("err-"))
+        }
+        if (data.startsWith("err-")) {
             return true;
-        else
-            return false;
+        }
+
+        if (data.startsWith("HTTP request failed")) {
+            return true;
+        }
+
+
+        return false;
     }
     /**
      * 是否成功
