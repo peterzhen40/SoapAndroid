@@ -18,6 +18,6 @@ allprojects {
 
 ```
 dependencies {
-	        implementation 'com.github.peterzhen40:SoapAndroid:V1.1'
+	        implementation 'com.github.peterzhen40:SoapAndroid:V1.2'
 	}
 ```
