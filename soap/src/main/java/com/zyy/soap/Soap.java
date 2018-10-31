@@ -171,7 +171,7 @@ public final class Soap {
                             mSoapRequest.getNameSpace(),
                             mSoapRequest.getEndPoint(),
                             mSoapRequest.getMethodName(),
-                            mSoapRequest.getParams(), okHttpClient);
+                            mSoapRequest.getParams(), isNewSystem,timeout);
                     if (!ResultUtil.isError(result)) {
                         Gson gson = new Gson();
                         if (responseType != String.class) {
@@ -215,7 +215,7 @@ public final class Soap {
                             mSoapRequest.getNameSpace(),
                             mSoapRequest.getEndPoint(),
                             mSoapRequest.getMethodName(),
-                            mSoapRequest.getParams(), okHttpClient);
+                            mSoapRequest.getParams(), isNewSystem,timeout);
                     if (!ResultUtil.isError(result)) {
                         Gson gson = new Gson();
                         if (responseType != String.class) {
