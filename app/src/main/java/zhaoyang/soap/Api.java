@@ -11,8 +11,13 @@ import com.zyy.soap.Soap;
 public class Api {
 
     public static ILoginService createLogin() {
+//        OkHttpClient okHttpClient = new OkHttpClient.Builder()
+//                .connectTimeout(20 * 1000L, TimeUnit.MILLISECONDS)
+//                .readTimeout(20 * 10000L, TimeUnit.MILLISECONDS)
+//                .build();
         Soap soap = new Soap.Builder()
-                .baseUrl("http://14.23.69.2:1076")
+                .baseUrl("http://119.29.111.172:7001/")
+                .timeout(20*1000)
                 .callFactory(AndroidCallFactory.create())
                 .build();
         return soap.create(ILoginService.class);

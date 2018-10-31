@@ -4,14 +4,12 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 
 import com.zyy.soap.Soap;
 
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
-
-import io.reactivex.annotations.NonNull;
-import io.reactivex.functions.Consumer;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
@@ -21,6 +19,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         Soap.setDEBUG(BuildConfig.DEBUG);
         setContentView(R.layout.activity_main);
+        final TextView textView = findViewById(R.id.textView);
         findViewById(R.id.button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -34,11 +33,13 @@ public class MainActivity extends AppCompatActivity {
 
                     @Override
                     public void onNext(UserInfo userInfo) {
+                        textView.setText(userInfo.toString());
                         Log.d(TAG, "onNext: " + userInfo.toString());
                     }
 
                     @Override
                     public void onError(Throwable t) {
+                        textView.setText(t.getMessage());
                         Log.d(TAG, "onError: ", t);
                     }
 

@@ -3,13 +3,13 @@ package com.zyy.soap;
 import com.google.gson.Gson;
 import com.google.gson.TypeAdapter;
 import com.google.gson.reflect.TypeToken;
+
 import com.zyy.soap.factory.DefaultCallFactory;
 import com.zyy.soap.factory.ICallFactory;
 import com.zyy.soap.improved.RxLog;
 import com.zyy.soap.improved.RxService;
 import com.zyy.soap.interfaces.ISoapRequest;
 import com.zyy.soap.result.ResultUtil;
-import com.zyy.soap.service.SoapService;
 import com.zyy.soap.utils.AnnonationsUtil;
 import com.zyy.soap.utils.Utils;
 
@@ -53,18 +53,16 @@ public final class Soap {
     public static String ENDPOINT = "";
     private ICallFactory callFactory;
     private OkHttpClient okHttpClient;
-    private SYSTEM system;
+    private boolean isNewSystem;
+    private int timeout;
 
     public enum SYSTEM {MINBAO, JDYZB}
 
-
-    Soap(String baseUrl, ICallFactory callFactory, boolean isNew,
-         OkHttpClient okHttpClient, SYSTEM system) {
+    public Soap(String baseUrl, ICallFactory callFactory, boolean isNewSystem, int timeout) {
         this.baseUrl = baseUrl;
         this.callFactory = callFactory;
-        RxService.isNew = isNew;
-        this.okHttpClient = okHttpClient;
-        this.system = system;
+        this.isNewSystem = isNewSystem;
+        this.timeout = timeout;
     }
 
     public static void setDEBUG(boolean DEBUG) {
@@ -74,10 +72,11 @@ public final class Soap {
 
     public static final class Builder {
         private String baseUrl;
-        private ICallFactory callFactory;
-        private boolean isNew = false;
+        private ICallFactory callFactory = DefaultCallFactory.create();
+        private boolean isNew = false;//民爆是旧，剧毒是新
         private OkHttpClient okHttpClient;
         private SYSTEM builderSystem = SYSTEM.MINBAO;
+        private int timeout = 1000*10;
 
         public Builder baseUrl(String baseUrl) {
             this.baseUrl = baseUrl;
@@ -91,6 +90,7 @@ public final class Soap {
 
         public Builder system(SYSTEM sys) {
             this.builderSystem = sys;
+            this.isNew = sys==SYSTEM.JDYZB;
             return this;
         }
 
@@ -100,17 +100,23 @@ public final class Soap {
             return this;
         }
 
-        public Builder client(OkHttpClient okHttpClient) {
+        /**
+         * okhttp3.8.1崩溃，弃用
+         * @param okHttpClient
+         * @return
+         */
+        private Builder client(OkHttpClient okHttpClient) {
             this.okHttpClient = okHttpClient;
             return this;
         }
 
+        public Builder timeout(int timeout) {
+            this.timeout = timeout;
+            return this;
+        }
+
         public Soap build() {
-            if (null == callFactory) {
-                return new Soap(baseUrl, DefaultCallFactory.create(),
-                        isNew, okHttpClient, builderSystem);
-            } else return new Soap(baseUrl, callFactory, isNew,
-                    okHttpClient, builderSystem);
+            return new Soap(baseUrl, callFactory, isNew, timeout);
         }
     }
 
@@ -144,7 +150,7 @@ public final class Soap {
                                     mSoapRequest.getNameSpace(),
                                     mSoapRequest.getEndPoint(),
                                     mSoapRequest.getMethodName(),
-                                    mSoapRequest.getParams(), okHttpClient);
+                                    mSoapRequest.getParams(), isNewSystem,timeout);
                         } else {
                             throw new IllegalArgumentException("unknown return type,you must use Observable,Flowable,String");
                         }
