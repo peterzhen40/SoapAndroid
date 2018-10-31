@@ -15,9 +15,10 @@ allprojects {
 ```
 
 #### Step 2. Add the dependency
+[![](https://jitpack.io/v/peterzhen40/SoapAndroid.svg)](https://jitpack.io/#peterzhen40/SoapAndroid)
 
 ```
 dependencies {
-	        implementation 'com.github.peterzhen40:SoapAndroid:V1.3'
+	        implementation 'com.github.peterzhen40:SoapAndroid:V1.3.2'
 	}
 ```
