@@ -62,9 +62,6 @@ public class RxService {
                     resultObject = (SoapPrimitive) envelope.getResponse();
                 }
                 String resultStr = (null == resultObject ? "" : resultObject.toString());
-                if (null == resultStr || resultStr.length() == 0) {
-                    resultStr = "返回结果为空";
-                }
                 RxLog.log(namespace, endPoint, methodName, params, resultStr);
                 return resultStr;
             } catch (Exception e) {
@@ -112,9 +109,6 @@ public class RxService {
                 resultObject = (SoapPrimitive) envelope.getResponse();
             }
             String resultStr = (null == resultObject ? "" : resultObject.toString());
-            if (null == resultStr || resultStr.length() == 0) {
-                resultStr = "返回结果为空";
-            }
             RxLog.log(namespace, endPoint, methodName, params, resultStr);
             return resultStr;
         } catch (Exception e) {
