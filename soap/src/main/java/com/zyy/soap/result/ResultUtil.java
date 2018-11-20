@@ -1,13 +1,21 @@
 package com.zyy.soap.result;
 
+import com.google.gson.JsonParseException;
+
+import android.text.TextUtils;
+
 import com.zyy.soap.Soap;
 
+import org.json.JSONException;
 import org.ksoap2.SoapFault;
 import org.ksoap2.SoapFault12;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
 import java.net.SocketTimeoutException;
+import java.net.UnknownHostException;
+
+import retrofit2.HttpException;
 
 /**
  * Error 帮助类
@@ -39,6 +47,19 @@ public class ResultUtil {
         }
 
 
+        return false;
+    }
+
+    /**
+     * 是否成功
+     *
+     * @param data
+     * @return
+     */
+    public static boolean isOk(String data) {
+        if (null != data && data.equals("ok")) {
+            return true;
+        }
         return false;
     }
 
@@ -103,4 +124,85 @@ public class ResultUtil {
             }
         }
     }
+
+    /**
+     * 新增 错误处理
+     *
+     * @param e
+     * @param system 民爆系统还是剧毒易制爆系统
+     * @return
+     */
+    public static String getErrorMessage(Throwable e, Soap.SYSTEM system) {
+        if (e != null) {
+            if (e instanceof HttpException) {
+                HttpException httpException = (HttpException) e;
+                switch (httpException.code()) {
+                    case 403:
+                        return "403:用户过期了，请重新登录";
+                    case 401:
+                        return "401:未授权";
+                    case 404:
+                        return "404:网页不存在";
+                    case 405:
+                        return "405:方法不被允许";
+                    default:
+                        return httpException.message();
+                }
+            } else if (e instanceof UnknownHostException) {
+                return "连接失败";
+            } else if (e instanceof JSONException
+                    || e instanceof JsonParseException) {
+                return "Json解析失败";
+            } else if (e instanceof SocketTimeoutException) {
+                return "连接超时";
+            } else {
+                String message = e.getMessage();
+                return getErrorCodeMsg(message, system);
+            }
+        }
+        return "";
+    }
+
+    /**
+     * 新增 错误码处理
+     *
+     * @param errorStr
+     * @param system
+     * @return
+     */
+    public static String getErrorCodeMsg(String errorStr, Soap.SYSTEM system) {
+        if (TextUtils.isEmpty(errorStr)) {
+            return "错误信息为空";
+        }
+
+        //err开头
+        if (errorStr.startsWith("err")) {
+            //形式：err-4444:返回数据为空，返回后一段
+            String errorMsg = "";
+            try {
+                errorMsg = errorStr.split(":")[1];
+            } catch (Exception e) {
+                e.printStackTrace();
+                //没有后一段，errorStr即错误码err-4444
+                if (system == Soap.SYSTEM.MINBAO) {
+                    if (ResultState.mErrorMap.containsKey(errorStr)) {
+                        errorMsg = ResultState.mErrorMap.get(errorStr);
+                    } else {
+                        errorMsg = "未知错误：" + errorStr;
+                    }
+                } else if (system == Soap.SYSTEM.JDYZB) {
+                    if (ResultStateForJDYzb.errMap.containsKey(errorStr)) {
+                        errorMsg = ResultStateForJDYzb.errMap.get(errorStr);
+                    } else {
+                        errorMsg = "未知错误：" + errorStr;
+                    }
+                }
+            }
+            return errorMsg;
+        } else {
+            //不是error开头，直接返回
+            return errorStr;
+        }
+    }
+
 }

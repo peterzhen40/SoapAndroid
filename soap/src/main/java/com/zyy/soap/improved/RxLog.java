@@ -10,7 +10,7 @@ import java.util.Map;
  */
 
 public class RxLog {
-    private static String TAG = "SoapLog ";
+    private static String TAG = "SoapLog";
 
     private static boolean DEBUG = false;
 

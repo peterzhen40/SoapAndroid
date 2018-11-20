@@ -14,7 +14,6 @@ import java.util.Map;
 /**
  * 用于判断是否有错误
  */
-@Deprecated
 public class ResultState {
 
     public static Map<String, String> mErrorMap = new HashMap<String, String>();
@@ -119,14 +118,13 @@ public class ResultState {
     /**
      * 根据error code 获取 error 状态
      *
-     * @param errorCode
-     *            : error code
+     * @param errorCode error code
      * @return error 状态
      */
     public static String getErrorState(String errorCode) {
         if (mErrorMap.containsKey(errorCode)) {
             return mErrorMap.get(errorCode);
         }
-        return "未知错误，服务器不予受理" + errorCode;
+        return "未知错误：" + errorCode;
     }
 }

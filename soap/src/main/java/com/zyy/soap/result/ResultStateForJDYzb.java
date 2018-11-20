@@ -64,4 +64,16 @@ public class ResultStateForJDYzb {
         errMap.put("err-1300", "销售物品的库存不足");
     }
 
+    /**
+     * 根据error code 获取 error 状态
+     *
+     * @param errorCode error code
+     * @return error 状态
+     */
+    public static String getErrorState(String errorCode) {
+        if (errMap.containsKey(errorCode)) {
+            return errMap.get(errorCode);
+        }
+        return "未知错误：" + errorCode;
+    }
 }
