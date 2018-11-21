@@ -125,6 +125,14 @@ public class ResultUtil {
         }
     }
 
+    public static String getErrorMsgForMB(Throwable e) {
+        return getErrorMessage(e, Soap.SYSTEM.MINBAO);
+    }
+
+    public static String getErrorMsgForJDYZB(Throwable e) {
+        return getErrorMessage(e, Soap.SYSTEM.JDYZB);
+    }
+
     /**
      * 新增 错误处理
      *
@@ -170,7 +178,7 @@ public class ResultUtil {
      * @param system
      * @return
      */
-    public static String getErrorCodeMsg(String errorStr, Soap.SYSTEM system) {
+    private static String getErrorCodeMsg(String errorStr, Soap.SYSTEM system) {
         if (TextUtils.isEmpty(errorStr)) {
             return "错误信息为空";
         }

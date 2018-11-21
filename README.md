@@ -11,7 +11,7 @@ allprojects {
 			...
 			maven { url 'https://jitpack.io' }
 		}
-	}
+}
 ```
 
 #### Step 2. Add the dependency
@@ -19,6 +19,6 @@ allprojects {
 
 ```
 dependencies {
-	        implementation 'com.github.peterzhen40:SoapAndroid:V1.3.6'
-	}
+    implementation 'com.github.peterzhen40:SoapAndroid:V1.3.8'
+}
 ```
