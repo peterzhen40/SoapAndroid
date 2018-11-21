@@ -52,6 +52,7 @@ public class ResultUtil {
 
     /**
      * 是否成功
+     * 不可删，兼容旧版本
      *
      * @param data
      * @return
@@ -63,6 +64,11 @@ public class ResultUtil {
         return false;
     }
 
+    /**
+     * 不可删，兼容旧版本
+     * @param e
+     * @return
+     */
     public static String convertExceptionToString(Exception e) {
         String suffix = "err-3333:";
         if (e instanceof SocketTimeoutException) {
@@ -80,7 +86,7 @@ public class ResultUtil {
 
     /**
      * 没有数据
-     *
+     * 不可删，兼容旧版本
      * @return
      */
     public static String convertNoData() {
@@ -90,7 +96,7 @@ public class ResultUtil {
 
     /**
      * 解析返回错误信息
-     *
+     * 不可删，兼容旧版本
      * @param data
      * @return
      */
@@ -124,6 +130,8 @@ public class ResultUtil {
             }
         }
     }
+
+    /** =======================================新的错误处理======================================================== */
 
     public static String getErrorMsgForMB(Throwable e) {
         return getErrorMessage(e, Soap.SYSTEM.MINBAO);
