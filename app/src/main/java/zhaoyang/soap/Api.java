@@ -16,7 +16,7 @@ public class Api {
 //                .readTimeout(20 * 10000L, TimeUnit.MILLISECONDS)
 //                .build();
         Soap soap = new Soap.Builder()
-                .baseUrl("http://192.168.11.109:7001")
+                .baseUrl(MainActivity.BASE_URL)
                 .timeout(20*1000)
                 .callFactory(AndroidCallFactory.create())
                 .build();
@@ -25,7 +25,7 @@ public class Api {
 
     public static ICommonService commonService() {
         Soap soap = new Soap.Builder()
-                .baseUrl("http://192.168.11.109:7001")
+                .baseUrl(MainActivity.BASE_URL)
                 .timeout(20*1000)
                 .callFactory(AndroidCallFactory.create())
                 .build();

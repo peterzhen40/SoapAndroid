@@ -238,6 +238,7 @@ public final class Soap {
                         }
                     }
                 } catch (Exception e) {
+                    //在此捕获异常
                     if (!emitter.isCancelled()) {
                         emitter.onError(e);
                     }
