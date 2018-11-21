@@ -133,10 +133,20 @@ public class ResultUtil {
 
     /** =======================================新的错误处理======================================================== */
 
+    /**
+     * 民爆系统
+     * @param e
+     * @return
+     */
     public static String getErrorMsgForMB(Throwable e) {
         return getErrorMessage(e, Soap.SYSTEM.MINBAO);
     }
 
+    /**
+     * 剧毒易制爆系统
+     * @param e
+     * @return
+     */
     public static String getErrorMsgForJDYZB(Throwable e) {
         return getErrorMessage(e, Soap.SYSTEM.JDYZB);
     }
