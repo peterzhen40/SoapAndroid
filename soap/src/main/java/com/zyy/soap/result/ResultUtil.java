@@ -142,12 +142,21 @@ public class ResultUtil {
         return getErrorMessage(e, Soap.SYSTEM.MINBAO);
     }
 
+    //默认
+    public static String getErrorMessage(Throwable e) {
+        return getErrorMessage(e, Soap.SYSTEM.MINBAO);
+    }
+
     /**
      * 剧毒易制爆系统
      * @param e
      * @return
      */
     public static String getErrorMsgForJDYZB(Throwable e) {
+        return getErrorMessage(e, Soap.SYSTEM.JDYZB);
+    }
+
+    public static String getErrorMsgForNewSoap(Throwable e) {
         return getErrorMessage(e, Soap.SYSTEM.JDYZB);
     }
 
@@ -158,7 +167,7 @@ public class ResultUtil {
      * @param system 民爆系统还是剧毒易制爆系统
      * @return
      */
-    public static String getErrorMessage(Throwable e, Soap.SYSTEM system) {
+    private static String getErrorMessage(Throwable e, Soap.SYSTEM system) {
         if (e != null) {
             if (e instanceof HttpException) {
                 HttpException httpException = (HttpException) e;
