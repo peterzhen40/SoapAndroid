@@ -26,7 +26,6 @@ import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.annotations.NonNull;
-import okhttp3.OkHttpClient;
 
 
 /**
@@ -46,37 +45,32 @@ import okhttp3.OkHttpClient;
 public final class Soap {
 
     private String baseUrl = "";
-    private static boolean DEBUG = false;
-
-    //用于配置旧的Ksoap2util,rxapiutil,rxlog
-    public static String NAMESPACE = "";
-    public static String ENDPOINT = "";
     private ICallFactory callFactory;
-    private OkHttpClient okHttpClient;
-    private boolean isNewSystem;
+    private boolean isNewSoap;
     private int timeout;
+    private boolean isHttps;
 
     public enum SYSTEM {MINBAO, JDYZB}
 
-    public Soap(String baseUrl, ICallFactory callFactory, boolean isNewSystem, int timeout) {
+    public Soap(String baseUrl, ICallFactory callFactory, boolean isNewSoap, int timeout, boolean isHttps) {
         this.baseUrl = baseUrl;
         this.callFactory = callFactory;
-        this.isNewSystem = isNewSystem;
+        this.isNewSoap = isNewSoap;
         this.timeout = timeout;
+        this.isHttps = isHttps;
     }
 
     public static void setDEBUG(boolean DEBUG) {
         RxLog.setDEBUG(DEBUG);
-        Soap.DEBUG = DEBUG;
     }
 
     public static final class Builder {
         private String baseUrl;
         private ICallFactory callFactory = DefaultCallFactory.create();
         private boolean isNew = false;//民爆是旧，剧毒是新
-        private OkHttpClient okHttpClient;
         private SYSTEM builderSystem = SYSTEM.MINBAO;
         private int timeout = 1000*10;
+        private boolean isHttps = false;
 
         public Builder baseUrl(String baseUrl) {
             this.baseUrl = baseUrl;
@@ -94,19 +88,8 @@ public final class Soap {
             return this;
         }
 
-
         public Builder callFactory(ICallFactory callFactory) {
             this.callFactory = callFactory;
-            return this;
-        }
-
-        /**
-         * okhttp3.8.1崩溃，弃用
-         * @param okHttpClient
-         * @return
-         */
-        private Builder client(OkHttpClient okHttpClient) {
-            this.okHttpClient = okHttpClient;
             return this;
         }
 
@@ -115,8 +98,13 @@ public final class Soap {
             return this;
         }
 
+        public Builder isHttps(boolean isHttps) {
+            this.isHttps = isHttps;
+            return this;
+        }
+
         public Soap build() {
-            return new Soap(baseUrl, callFactory, isNew, timeout);
+            return new Soap(baseUrl, callFactory, isNew, timeout, isHttps);
         }
     }
 
@@ -150,7 +138,7 @@ public final class Soap {
                                     mSoapRequest.getNameSpace(),
                                     mSoapRequest.getEndPoint(),
                                     mSoapRequest.getMethodName(),
-                                    mSoapRequest.getParams(), isNewSystem,timeout);
+                                    mSoapRequest.getParams(), isNewSoap,timeout,isHttps);
                         } else {
                             throw new IllegalArgumentException("unknown return type,you must use Observable,Flowable,String");
                         }
@@ -171,7 +159,7 @@ public final class Soap {
                             mSoapRequest.getNameSpace(),
                             mSoapRequest.getEndPoint(),
                             mSoapRequest.getMethodName(),
-                            mSoapRequest.getParams(), isNewSystem,timeout);
+                            mSoapRequest.getParams(), isNewSoap,timeout,isHttps);
                     if (!ResultUtil.isError(result)) {
                         Gson gson = new Gson();
                         if (responseType != String.class) {
@@ -215,7 +203,7 @@ public final class Soap {
                             mSoapRequest.getNameSpace(),
                             mSoapRequest.getEndPoint(),
                             mSoapRequest.getMethodName(),
-                            mSoapRequest.getParams(), isNewSystem,timeout);
+                            mSoapRequest.getParams(), isNewSoap,timeout,isHttps);
                     if (!ResultUtil.isError(result)) {
                         Gson gson = new Gson();
                         if (responseType != String.class) {

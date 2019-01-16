@@ -28,6 +28,7 @@ public class Api {
                 .baseUrl(MainActivity.BASE_URL)
                 .timeout(20*1000)
                 .callFactory(AndroidCallFactory.create())
+                .isHttps(true)
                 .build();
         return soap.create(ICommonService.class);
     }
