@@ -134,7 +134,7 @@ public class ResultUtil {
     /** =======================================新的错误处理======================================================== */
 
     /**
-     * 民爆系统
+     * 民爆系统的错误处理
      * @param e
      * @return
      */
@@ -142,21 +142,12 @@ public class ResultUtil {
         return getErrorMessage(e, Soap.SYSTEM.MINBAO);
     }
 
-    //默认
-    public static String getErrorMessage(Throwable e) {
-        return getErrorMessage(e, Soap.SYSTEM.MINBAO);
-    }
-
     /**
-     * 剧毒易制爆系统
+     * 剧毒易制爆系统的错误处理
      * @param e
      * @return
      */
     public static String getErrorMsgForJDYZB(Throwable e) {
-        return getErrorMessage(e, Soap.SYSTEM.JDYZB);
-    }
-
-    public static String getErrorMsgForNewSoap(Throwable e) {
         return getErrorMessage(e, Soap.SYSTEM.JDYZB);
     }
 

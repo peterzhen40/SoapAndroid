@@ -67,8 +67,7 @@ public final class Soap {
     public static final class Builder {
         private String baseUrl;
         private ICallFactory callFactory = DefaultCallFactory.create();
-        private boolean isNew = false;//民爆是旧，剧毒是新
-        private SYSTEM builderSystem = SYSTEM.MINBAO;
+        private boolean isNew = false;//是不是新系统（jdk1.8）
         private int timeout = 1000*10;
         private boolean isHttps = false;
 
@@ -79,12 +78,6 @@ public final class Soap {
 
         public Builder isNewSoap(boolean isNew) {
             this.isNew = isNew;
-            return this;
-        }
-
-        public Builder system(SYSTEM sys) {
-            this.builderSystem = sys;
-            this.isNew = sys==SYSTEM.JDYZB;
             return this;
         }
 
