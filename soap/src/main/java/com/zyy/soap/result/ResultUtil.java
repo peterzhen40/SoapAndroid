@@ -171,6 +171,8 @@ public class ResultUtil {
                         return "404:网页不存在";
                     case 405:
                         return "405:方法不被允许";
+                    case 408:
+                        return "408:等待服务器返回文件超时";
                     default:
                         return httpException.message();
                 }
