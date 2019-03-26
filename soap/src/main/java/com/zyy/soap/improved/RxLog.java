@@ -53,7 +53,19 @@ public class RxLog {
             } else {
                 Log.d(TAG, "4.没有参数");
             }
-            Log.d(TAG, "5.返回结果：" + result);
+
+            //长度判断，多行显示
+            if (result.length() > 3500) {
+                for (int i = 0; i < result.length(); i+=3500) {
+                    if (i + 4000 < result.length()) {
+                        Log.d(TAG, "5.返回结果：" + result.substring(i, i + 3500));
+                    } else {
+                        Log.d(TAG, "5.返回结果：" + result.substring(i));
+                    }
+                }
+            }else{
+                Log.d(TAG, "5.返回结果：" + result);
+            }
             if (null != e) {
                 log(e);
             }
