@@ -31,13 +31,8 @@ import io.reactivex.annotations.NonNull;
 /**
  * 用于Webservice protocol
  * <example>
- * Soap soap =new Soap.Builder()
- * .baseUrl("http://127.0.0.1")
- * .create();
- * Api api = soap.create(Api.class);
- * api.login("username","password","name")
- * .....
- * ......
+ * Soap soap =new Soap.Builder() .baseUrl("http://127.0.0.1") .create(); Api api = soap.create(Api.class);
+ * api.login("username","password","name") ..... ......
  * </example>
  * Created by zhaoyang on 2017/1/19.
  */
@@ -49,6 +44,7 @@ public final class Soap {
     private boolean isNewSoap;
     private int timeout;
     private boolean isHttps;
+    private SYSTEM builderSystem = SYSTEM.MINBAO;
 
     public enum SYSTEM {MINBAO, JDYZB}
 
@@ -68,8 +64,9 @@ public final class Soap {
         private String baseUrl;
         private ICallFactory callFactory = DefaultCallFactory.create();
         private boolean isNew = false;//是不是新系统（jdk1.8）
-        private int timeout = 1000*10;
+        private int timeout = 1000 * 10;
         private boolean isHttps = false;
+        private SYSTEM builderSystem = SYSTEM.MINBAO;
 
         public Builder baseUrl(String baseUrl) {
             this.baseUrl = baseUrl;
@@ -78,8 +75,20 @@ public final class Soap {
 
         public Builder isNewSoap(boolean isNew) {
             this.isNew = isNew;
+            if (isNew) {
+                this.builderSystem = SYSTEM.JDYZB;
+            } else {
+                this.builderSystem = SYSTEM.MINBAO;
+            }
             return this;
         }
+
+        public Builder system(SYSTEM sys) {
+            this.builderSystem = sys;
+            this.isNew = sys == SYSTEM.JDYZB;
+            return this;
+        }
+
 
         public Builder callFactory(ICallFactory callFactory) {
             this.callFactory = callFactory;
@@ -97,7 +106,9 @@ public final class Soap {
         }
 
         public Soap build() {
-            return new Soap(baseUrl, callFactory, isNew, timeout, isHttps);
+            Soap soap = new Soap(baseUrl, callFactory, isNew, timeout, isHttps);
+            soap.builderSystem = this.builderSystem;
+            return soap;
         }
     }
 
@@ -131,9 +142,10 @@ public final class Soap {
                                     mSoapRequest.getNameSpace(),
                                     mSoapRequest.getEndPoint(),
                                     mSoapRequest.getMethodName(),
-                                    mSoapRequest.getParams(), isNewSoap,timeout,isHttps);
+                                    mSoapRequest.getParams(), isNewSoap, timeout, isHttps);
                         } else {
-                            throw new IllegalArgumentException("unknown return type,you must use Observable,Flowable,String");
+                            throw new IllegalArgumentException("unknown return type,you must use Observable,Flowable," +
+                                    "String");
                         }
                     }
                 });
@@ -152,7 +164,7 @@ public final class Soap {
                             mSoapRequest.getNameSpace(),
                             mSoapRequest.getEndPoint(),
                             mSoapRequest.getMethodName(),
-                            mSoapRequest.getParams(), isNewSoap,timeout,isHttps);
+                            mSoapRequest.getParams(), isNewSoap, timeout, isHttps);
                     if (!ResultUtil.isError(result)) {
                         Gson gson = new Gson();
                         if (responseType != String.class) {
@@ -172,11 +184,25 @@ public final class Soap {
                     } else {
                         if (!emitter.isDisposed()) {
                             emitter.onError(new Throwable(result));
+                            RxLog.log(mSoapRequest.getNameSpace(), mSoapRequest.getEndPoint(),
+                                    mSoapRequest.getMethodName(),
+                                    mSoapRequest.getParams(), result, new Exception(ResultUtil.getErrorCodeMsg(result
+                                            , builderSystem)));
                         }
                     }
                 } catch (Exception e) {
                     if (!emitter.isDisposed()) {
                         emitter.onError(e);
+                        try {
+                            ISoapRequest mSoapRequest = AnnonationsUtil.
+                                    transformInvokeToRequest(service, method, args, baseUrl);
+                            RxLog.log(mSoapRequest.getNameSpace(), mSoapRequest.getEndPoint(),
+                                    mSoapRequest.getMethodName(),
+                                    mSoapRequest.getParams(), "", e);
+                        } catch (Exception e1) {
+                            e1.printStackTrace();
+                            RxLog.log(e1);
+                        }
                     }
                 }
             }
@@ -196,7 +222,7 @@ public final class Soap {
                             mSoapRequest.getNameSpace(),
                             mSoapRequest.getEndPoint(),
                             mSoapRequest.getMethodName(),
-                            mSoapRequest.getParams(), isNewSoap,timeout,isHttps);
+                            mSoapRequest.getParams(), isNewSoap, timeout, isHttps);
                     if (!ResultUtil.isError(result)) {
                         Gson gson = new Gson();
                         if (responseType != String.class) {
@@ -216,12 +242,26 @@ public final class Soap {
                     } else {
                         if (!emitter.isCancelled()) {
                             emitter.onError(new Throwable(result));
+                            RxLog.log(mSoapRequest.getNameSpace(), mSoapRequest.getEndPoint(),
+                                    mSoapRequest.getMethodName(),
+                                    mSoapRequest.getParams(), result, new Exception(ResultUtil.getErrorCodeMsg(result
+                                            , builderSystem)));
                         }
                     }
                 } catch (Exception e) {
                     //在此捕获异常
                     if (!emitter.isCancelled()) {
                         emitter.onError(e);
+                        try {
+                            ISoapRequest mSoapRequest = AnnonationsUtil.
+                                    transformInvokeToRequest(service, method, args, baseUrl);
+                            RxLog.log(mSoapRequest.getNameSpace(), mSoapRequest.getEndPoint(),
+                                    mSoapRequest.getMethodName(),
+                                    mSoapRequest.getParams(), "", e);
+                        } catch (Exception e1) {
+                            e1.printStackTrace();
+                            RxLog.log(e1);
+                        }
                     }
                 }
             }

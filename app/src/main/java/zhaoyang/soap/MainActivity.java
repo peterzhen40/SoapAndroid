@@ -19,7 +19,7 @@ import retrofit2.Retrofit;
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
-    public static String BASE_URL = "http://192.168.11.109:7001";
+    public static String BASE_URL = "http://192.168.11.111:5610";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
                 if (!TextUtils.isEmpty(address) && isValidUrl(address)) {
                     BASE_URL = address;
                     if ( !TextUtils.isEmpty(username) && !TextUtils.isEmpty(password)) {
-                        Api.commonService().login(username, password, "1")
+                        Api.createLogin().login(username, password, "1")
                                 .subscribe(new Subscriber<UserInfo>() {
                                     @Override
                                     public void onSubscribe(Subscription s) {
@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
                                     @Override
                                     public void onError(Throwable t) {
                                         textView.setText(t.getMessage());
-                                        Log.d(TAG, "onError: ", t);
+                                        //Log.d(TAG, "onError: ", t);
                                     }
 
                                     @Override

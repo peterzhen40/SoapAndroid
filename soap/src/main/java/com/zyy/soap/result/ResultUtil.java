@@ -198,7 +198,7 @@ public class ResultUtil {
      * @param system
      * @return
      */
-    private static String getErrorCodeMsg(String errorStr, Soap.SYSTEM system) {
+    public static String getErrorCodeMsg(String errorStr, Soap.SYSTEM system) {
         if (TextUtils.isEmpty(errorStr)) {
             return "错误信息为空";
         }
