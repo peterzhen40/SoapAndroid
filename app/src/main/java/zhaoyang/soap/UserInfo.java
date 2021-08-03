@@ -142,7 +142,7 @@ public class UserInfo {
     }
 
     public String getCompNo() {
-        return sn;
+        return compNo;
     }
 
     public void setCompNo(String sn) {

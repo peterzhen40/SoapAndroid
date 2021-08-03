@@ -56,7 +56,13 @@ class KotlinTestActivity : AppCompatActivity(), CoroutineScope by MainScope() {
 
                     val userInfo = Gson().fromJson(result, UserInfo::class.java)
                     Log.d("test", userInfo.toString())
+
+                    val result2 = Api.ktxService().getBpjhListForPeisong(userInfo.getCompNo(), "","","","","","")
+                    Log.d("test", result2.toString())
                 } catch (e: Exception) {
+                    withContext(Dispatchers.Main){
+                        textView.text = e.message
+                    }
                     Log.e("test", e.message, e)
                 }
             }

@@ -288,9 +288,8 @@ public final class Soap {
             RxLog.log(mSoapRequest.getNameSpace(), mSoapRequest.getEndPoint(),
                     mSoapRequest.getMethodName(),
                     mSoapRequest.getParams(), result,
-                    new Exception(ResultUtil.getErrorCodeMsg(result
-                            , builderSystem)));
-            throw new Exception(ResultUtil.getErrorCodeMsg(result, builderSystem));
+                    new Exception(result));
+            throw new RuntimeException(ResultUtil.getErrorCodeMsg(result, builderSystem));
         }
 
     }
