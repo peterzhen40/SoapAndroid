@@ -1,6 +1,5 @@
 apply plugin: 'com.android.library'
 apply plugin: 'com.github.dcendents.android-maven'
-apply plugin: 'kotlin-android'
 
 group='com.github.peterzhen40'
 
@@ -10,8 +9,8 @@ android {
     defaultConfig {
         minSdkVersion 15
         targetSdkVersion 22
-        versionCode 16
-        versionName "1.4.3"
+        versionCode 17
+        versionName "1.4.4"
     }
     buildTypes {
         release {

@@ -135,14 +135,14 @@ public final class Soap {
                             return callFactory.convert(createObservable(service, method, baseUrl, args));
                         } else if (responseClass == Flowable.class) {
                             return callFactory.convert(createFloawable(service, method, baseUrl, args));
-                        } else if (responseClass == String.class) {
-                            ISoapRequest mSoapRequest = AnnonationsUtil.
-                                    transformInvokeToRequest(service, method, args, baseUrl);
-                            return RxService.call(
-                                    mSoapRequest.getNameSpace(),
-                                    mSoapRequest.getEndPoint(),
-                                    mSoapRequest.getMethodName(),
-                                    mSoapRequest.getParams(), isNewSoap, timeout, isHttps);
+                        //} else if (responseClass == String.class) {
+                        //    ISoapRequest mSoapRequest = AnnonationsUtil.
+                        //            transformInvokeToRequest(service, method, args, baseUrl);
+                        //    return RxService.call(
+                        //            mSoapRequest.getNameSpace(),
+                        //            mSoapRequest.getEndPoint(),
+                        //            mSoapRequest.getMethodName(),
+                        //            mSoapRequest.getParams(), isNewSoap, timeout, isHttps);
                         } else {
                             //object, 返回string
                             return newStringCall(service, method, baseUrl, args);
