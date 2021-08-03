@@ -41,7 +41,7 @@ class KotlinTestActivity : AppCompatActivity(), CoroutineScope by MainScope() {
         val button = findViewById<Button>(R.id.button)
 
         etAddress.setText(BASE_URL)
-        etUsername.setText("slj")
+        etUsername.setText("test")
         etPassword.setText("88888")
 
 
@@ -57,7 +57,7 @@ class KotlinTestActivity : AppCompatActivity(), CoroutineScope by MainScope() {
                     val userInfo = Gson().fromJson(result, UserInfo::class.java)
                     Log.d("test", userInfo.toString())
                 } catch (e: Exception) {
-                    Log.e("test", e.message)
+                    Log.e("test", e.message, e)
                 }
             }
 

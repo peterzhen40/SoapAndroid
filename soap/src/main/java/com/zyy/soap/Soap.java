@@ -281,7 +281,18 @@ public final class Soap {
                 mSoapRequest.getEndPoint(),
                 mSoapRequest.getMethodName(),
                 mSoapRequest.getParams(), isNewSoap, timeout, isHttps);
-        return result;
+
+        if (!ResultUtil.isError(result)) {
+            return result;
+        } else {
+            RxLog.log(mSoapRequest.getNameSpace(), mSoapRequest.getEndPoint(),
+                    mSoapRequest.getMethodName(),
+                    mSoapRequest.getParams(), result,
+                    new Exception(ResultUtil.getErrorCodeMsg(result
+                            , builderSystem)));
+            throw new Exception(ResultUtil.getErrorCodeMsg(result, builderSystem));
+        }
+
     }
 
     private <T> T newCall(Class<?> service, Method method, String baseUrl, Object... args) {
