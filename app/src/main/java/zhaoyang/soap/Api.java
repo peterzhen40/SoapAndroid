@@ -20,14 +20,19 @@ public class Api {
         return soap.create(ILoginService.class);
     }
 
-    public static ICommonService commonService() {
+    public static KtxService ktxService() {
         Soap soap = new Soap.Builder()
                 .baseUrl(MainActivity.BASE_URL)
                 .system(Soap.SYSTEM.JDYZB)
                 .timeout(20*1000)
                 .callFactory(AndroidCallFactory.create())
-                .isHttps(true)
                 .build();
-        return soap.create(ICommonService.class);
+        try {
+            return soap.create(KtxService.class);
+        } catch (Exception e) {
+            e.printStackTrace();
+
+            return null;
+        }
     }
 }

@@ -1,5 +1,6 @@
 apply plugin: 'com.android.library'
 apply plugin: 'com.github.dcendents.android-maven'
+apply plugin: 'kotlin-android'
 
 group='com.github.peterzhen40'
 
@@ -9,8 +10,8 @@ android {
     defaultConfig {
         minSdkVersion 15
         targetSdkVersion 22
-        versionCode 14
-        versionName "1.4.1"
+        versionCode 15
+        versionName "1.4.2"
     }
     buildTypes {
         release {
@@ -19,6 +20,10 @@ android {
         }
     }
     productFlavors {
+    }
+    compileOptions {
+        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_1_8
     }
 }
 
@@ -31,6 +36,7 @@ dependencies {
     implementation 'com.squareup.okhttp3:okhttp:3.8.1'
     implementation 'com.squareup.retrofit2:retrofit:2.3.0'
 
+    //implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }
 
 

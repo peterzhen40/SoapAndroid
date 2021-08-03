@@ -144,8 +144,10 @@ public final class Soap {
                                     mSoapRequest.getMethodName(),
                                     mSoapRequest.getParams(), isNewSoap, timeout, isHttps);
                         } else {
-                            throw new IllegalArgumentException("unknown return type,you must use Observable,Flowable," +
-                                    "String");
+                            //object, 返回string
+                            return newStringCall(service, method, baseUrl, args);
+                            //throw new IllegalArgumentException("unknown return type,you must use " +
+                            //        "Observable,Flowable,String");
                         }
                     }
                 });
@@ -186,7 +188,8 @@ public final class Soap {
                             emitter.onError(new Throwable(result));
                             RxLog.log(mSoapRequest.getNameSpace(), mSoapRequest.getEndPoint(),
                                     mSoapRequest.getMethodName(),
-                                    mSoapRequest.getParams(), result, new Exception(ResultUtil.getErrorCodeMsg(result
+                                    mSoapRequest.getParams(), result,
+                                    new Exception(ResultUtil.getErrorCodeMsg(result
                                             , builderSystem)));
                         }
                     }
@@ -244,7 +247,8 @@ public final class Soap {
                             emitter.onError(new Throwable(result));
                             RxLog.log(mSoapRequest.getNameSpace(), mSoapRequest.getEndPoint(),
                                     mSoapRequest.getMethodName(),
-                                    mSoapRequest.getParams(), result, new Exception(ResultUtil.getErrorCodeMsg(result
+                                    mSoapRequest.getParams(), result,
+                                    new Exception(ResultUtil.getErrorCodeMsg(result
                                             , builderSystem)));
                         }
                     }
@@ -267,6 +271,70 @@ public final class Soap {
             }
         }, BackpressureStrategy.BUFFER);
     }
+
+
+    private String newStringCall(Class<?> service, Method method, String baseUrl, Object... args) throws Exception {
+        ISoapRequest mSoapRequest = AnnonationsUtil.
+                transformInvokeToRequest(service, method, args, baseUrl);
+        String result = RxService.call(
+                mSoapRequest.getNameSpace(),
+                mSoapRequest.getEndPoint(),
+                mSoapRequest.getMethodName(),
+                mSoapRequest.getParams(), isNewSoap, timeout, isHttps);
+        return result;
+    }
+
+    private <T> T newCall(Class<?> service, Method method, String baseUrl, Object... args) {
+
+        try {
+            ISoapRequest mSoapRequest = AnnonationsUtil.
+                    transformInvokeToRequest(service, method, args, baseUrl);
+            String result = RxService.call(
+                    mSoapRequest.getNameSpace(),
+                    mSoapRequest.getEndPoint(),
+                    mSoapRequest.getMethodName(),
+                    mSoapRequest.getParams(), isNewSoap, timeout, isHttps);
+            if (!ResultUtil.isError(result)) {
+                Gson gson = new Gson();
+                Type genericReturnType = method.getGenericReturnType();
+                Type responseType = Utils.getCallResponseType(genericReturnType);
+                Class<?> returnType = method.getReturnType();
+                if (returnType != String.class) {
+
+                    TypeAdapter<?> adapter = gson.getAdapter(TypeToken.get(returnType));
+                    Object obj = adapter.fromJson(result);
+                    //T obj = gson.fromJson(result, returnType);
+
+                    return (T) obj;
+                } else {
+                    return (T) result;
+                }
+
+            } else {
+                RxLog.log(mSoapRequest.getNameSpace(), mSoapRequest.getEndPoint(),
+                        mSoapRequest.getMethodName(),
+                        mSoapRequest.getParams(), result,
+                        new Exception(ResultUtil.getErrorCodeMsg(result
+                                , builderSystem)));
+                throw new Exception(ResultUtil.getErrorCodeMsg(result, builderSystem));
+            }
+        } catch (Exception e) {
+            //在此捕获异常
+            try {
+                ISoapRequest mSoapRequest = AnnonationsUtil.
+                        transformInvokeToRequest(service, method, args, baseUrl);
+                RxLog.log(mSoapRequest.getNameSpace(), mSoapRequest.getEndPoint(),
+                        mSoapRequest.getMethodName(),
+                        mSoapRequest.getParams(), "", e);
+            } catch (Exception e1) {
+                e1.printStackTrace();
+                RxLog.log(e1);
+            }
+        }
+
+        return null;
+    }
+
 }
 
 
